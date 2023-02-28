@@ -25,3 +25,9 @@ target_link_libraries(
     GTest::gtest_main
     Phantom.FlatBuffers.Natvis.Test.FlatBuffers
 )
+
+set_target_properties(
+    Phantom.FlatBuffers.Natvis.Test
+    PROPERTIES
+    CXX_STANDARD 20
+)
