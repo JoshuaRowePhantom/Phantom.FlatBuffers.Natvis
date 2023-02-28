@@ -1,0 +1,13 @@
+namespace Phantom.FlatBuffers.Natvis.Test.FlatBuffers;
+
+table SubTable {
+    value : uint8;
+}
+
+table TestTable {
+    vector_table : [SubTable];
+    sub_table : SubTable;
+    string_value : string;
+    byte_vector : [byte];
+    double_vector : [double];
+}
