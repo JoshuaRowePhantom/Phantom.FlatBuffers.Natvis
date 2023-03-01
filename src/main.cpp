@@ -166,7 +166,7 @@ struct FieldExpressions
         fieldName = field->name()->str();
         fieldOffsetExpression = std::format("({0}[{1}])", vtableExpression, field->id() + 2);
         fieldPresentExpression = std::format(
-            "({0} &gt; {1} &amp;&amp; {2} != 0)",
+            "({0} &gt; ({1} * 2 + 4) &amp;&amp; {2} != 0)",
             vtableLengthExpression,
             field->id(),
             fieldOffsetExpression);

@@ -9,6 +9,7 @@ using namespace FlatBuffers;
 TEST(DebuggerTests, Step_into_this_and_look_at_visualization_in_VisualStudio)
 {
     const TestTable* table;
+    const TestTable* table2;
     flatbuffers::FlatBufferBuilder builder;
     {
         TestTableT topLevel;
@@ -54,6 +55,14 @@ TEST(DebuggerTests, Step_into_this_and_look_at_visualization_in_VisualStudio)
         builder.Finish(rootOffset);
 
         table = flatbuffers::GetRoot<TestTable>(builder.GetBufferPointer());
+    }
+    {
+        TestTableT topLevel;
+        topLevel.double_vector.push_back(0.5);
+        auto rootOffset = TestTable::Pack(builder, &topLevel);
+        builder.Finish(rootOffset);
+
+        table2 = flatbuffers::GetRoot<TestTable>(builder.GetBufferPointer());
     }
     // Set a breakpoint here and inspect in natvis
     std::ignore = std::ignore;
