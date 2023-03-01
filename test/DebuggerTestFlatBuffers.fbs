@@ -5,7 +5,16 @@ table SubTable2 {
 }
 
 table SubTable {
-    value : uint8;
+    value : uint32;
+}
+
+struct TestStruct {
+    ulong_value : ulong;
+}
+
+union TestUnion {
+    sub_table : SubTable,
+    sub_table_2 : SubTable2
 }
 
 table TestTable {
@@ -15,6 +24,8 @@ table TestTable {
     string_value : string;
     byte_vector : [byte];
     double_vector : [double];
+
+    union_value : TestUnion;
 
     bool_value : bool;
     byte_value : byte;

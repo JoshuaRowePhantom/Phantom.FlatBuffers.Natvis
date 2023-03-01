@@ -10,10 +10,9 @@
 #include <boost/algorithm/string.hpp>
 
 std::string GetCppTypeName(
-    const reflection::Object* object
+    std::string name
 )
 {
-    auto name = object->name()->str();
     boost::replace_all(
         name,
         ".",
@@ -21,8 +20,19 @@ std::string GetCppTypeName(
     );
     return name;
 }
+
+std::string GetCppTypeName(
+    const reflection::Object* object
+)
+{
+    return GetCppTypeName(
+        object->name()->str());
+}
+
 std::string GetFieldType(
     reflection::BaseType type);
+
+std::string GetNatvis(const reflection::Schema* schema);
 
 std::string GetIndirectFieldType(
     const reflection::Schema* schema,
@@ -30,6 +40,11 @@ std::string GetIndirectFieldType(
 {
     switch (field->type()->base_type())
     {
+    case reflection::BaseType::UType:
+        return GetCppTypeName(
+            schema->enums()->Get(field->type()->index())->name()->str());
+        break;
+
     case reflection::BaseType::Obj:
         return GetCppTypeName(
             schema->objects()->Get(field->type()->index()));
@@ -101,6 +116,12 @@ std::string GetFieldType(
     case reflection::BaseType::UInt:
         return "unsigned int";
         break;
+    case reflection::BaseType::Union:
+        return "Union";
+        break;
+    case reflection::BaseType::UType:
+        return "unsigned char";
+        break;
     case reflection::BaseType::ULong:
         return "unsigned long long";
         break;
@@ -147,6 +168,7 @@ std::string GetNatvis(
             {
                 for (auto field : *object->fields())
                 {
+                    std::string fieldName = field->name()->str();
                     std::string fieldOffsetExpression = std::format("{0}[{1}]", vtableExpression, field->id() + 2);
                     std::string fieldPresentExpression = std::format(
                         "({0} &gt; {1} &amp;&amp; {2} != 0)",
@@ -176,6 +198,18 @@ std::string GetNatvis(
                         fieldType,
                         fieldOffsetExpression
                     );
+
+                    if (field->type()->base_type() == reflection::BaseType::UType)
+                    {
+                        auto unionEnumerationType = GetIndirectFieldType(
+                            schema,
+                            field);
+
+                        fieldValueExpression = std::format(
+                            "static_cast&lt;{0}&gt;({1})",
+                            unionEnumerationType,
+                            fieldValueExpression);
+                    }
 
                     if (IsIndirect(field))
                     {

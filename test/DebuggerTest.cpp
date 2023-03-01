@@ -29,6 +29,10 @@ TEST(DebuggerTests, Step_into_this_and_look_at_visualization_in_VisualStudio)
     topLevel.double_vector.push_back(0.75);
     topLevel.double_vector.push_back(0.885);
     
+    SubTable2T unionSubTable;
+    unionSubTable.value_2 = 0xfe;
+    topLevel.union_value.Set(unionSubTable);
+
     topLevel.bool_value = true;
     topLevel.byte_value = 0xf0;
     topLevel.double_value = .75;
