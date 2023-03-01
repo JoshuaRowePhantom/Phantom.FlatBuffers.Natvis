@@ -1,7 +1,7 @@
-#include <optional>
 #include <boost/optional.hpp>
 #include <boost/program_options.hpp>
 #include <flatbuffers/reflection.h>
+#include <algorithm>
 #include <format>
 #include <fstream>
 #include <iostream>
@@ -36,44 +36,52 @@ std::string GetNatvis(const reflection::Schema* schema);
 
 std::string GetIndirectFieldType(
     const reflection::Schema* schema,
-    const reflection::Field* field)
+    const reflection::Type* type)
 {
-    switch (field->type()->base_type())
+    switch (type->base_type())
     {
+    case reflection::BaseType::Union:
+        return "void";
+        break;
+
     case reflection::BaseType::UType:
         return GetCppTypeName(
-            schema->enums()->Get(field->type()->index())->name()->str());
+            schema->enums()->Get(type->index())->name()->str());
         break;
 
     case reflection::BaseType::Obj:
         return GetCppTypeName(
-            schema->objects()->Get(field->type()->index()));
+            schema->objects()->Get(type->index()));
+
+    case reflection::BaseType::String:
+        return "flatbuffers::Vector&lt;char&gt;";
 
     case reflection::BaseType::Vector:
-        if (field->type()->element() == reflection::BaseType::Obj)
+        if (type->element() == reflection::BaseType::Obj)
         {
             return std::format(
                 "flatbuffers::Vector&lt;flatbuffers::Offset&lt;{0}&gt; &gt;",
                 GetCppTypeName(
-                    schema->objects()->Get(field->type()->index()))
+                    schema->objects()->Get(type->index()))
             );
         }
 
         return std::format(
             "flatbuffers::Vector&lt;{0}&gt;",
-            GetFieldType(field->type()->element())
+            GetFieldType(type->element())
         );
     }
     return "UnknownType";
 }
 
 bool IsIndirect(
-    const reflection::Field* field)
+    const reflection::BaseType type)
 {
-    switch (field->type()->base_type())
+    switch (type)
     {
     case reflection::BaseType::Obj:
     case reflection::BaseType::String:
+    case reflection::BaseType::Union:
     case reflection::BaseType::Vector:
         return true;
     default:
@@ -110,6 +118,7 @@ std::string GetFieldType(
         break;
     case reflection::BaseType::String:
         return "signed long long";
+        break;
     case reflection::BaseType::UByte:
         return "unsigned char";
         break;
@@ -117,7 +126,7 @@ std::string GetFieldType(
         return "unsigned int";
         break;
     case reflection::BaseType::Union:
-        return "Union";
+        return "signed long";
         break;
     case reflection::BaseType::UType:
         return "unsigned char";
@@ -135,6 +144,63 @@ std::string GetFieldType(
 
     return "UnknownType";
 }
+
+const std::string vtableExpression = "reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))";
+const std::string vtableLengthExpression = vtableExpression + "[0]";
+
+
+struct FieldExpressions
+{
+    std::string fieldName;
+    std::string fieldOffsetExpression;
+    std::string fieldPresentExpression;
+    std::string fieldValueExpression;
+    std::string fieldType;
+
+    FieldExpressions(
+        const reflection::Schema* schema,
+        const reflection::Field* field
+    )
+    {
+        fieldName = field->name()->str();
+        fieldOffsetExpression = std::format("({0}[{1}])", vtableExpression, field->id() + 2);
+        fieldPresentExpression = std::format(
+            "({0} &gt; {1} &amp;&amp; {2} != 0)",
+            vtableLengthExpression,
+            field->id(),
+            fieldOffsetExpression);
+
+        std::string fieldType = GetFieldType(field->type()->base_type());
+        fieldValueExpression = std::format(
+            "*reinterpret_cast&lt;{0}*&gt;(data_ + {1})",
+            fieldType,
+            fieldOffsetExpression
+        );
+
+        if (field->type()->base_type() == reflection::BaseType::UType)
+        {
+            auto unionEnumerationType = GetIndirectFieldType(
+                schema,
+                field->type());
+
+            fieldValueExpression = std::format(
+                "static_cast&lt;{0}&gt;({1})",
+                unionEnumerationType,
+                fieldValueExpression);
+        }
+
+        if (IsIndirect(field->type()->base_type()))
+        {
+            auto indirectFieldType = GetIndirectFieldType(schema, field->type());
+
+            fieldValueExpression = std::format(
+                "reinterpret_cast&lt;{0}*&gt;(data_ + {1} + {2})",
+                indirectFieldType,
+                fieldOffsetExpression,
+                fieldValueExpression);
+        }
+    }
+};
 
 std::string GetNatvis(
     const reflection::Schema* schema
@@ -154,78 +220,115 @@ std::string GetNatvis(
                 continue;
             }
 
-            auto name = GetCppTypeName(
+            auto typeName = GetCppTypeName(
                 object);
             
-            result << R"(    <Type Name=")" << name << R"(">
+            result << std::format(R"(    <Type Name="{0}">
         <Expand>
-)";
+)",
+                typeName);
 
-            std::string vtableExpression = "reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))";
-            std::string vtableLengthExpression = vtableExpression + "[0]";
-            
             if (object->fields())
             {
-                for (auto field : *object->fields())
+                std::vector<const reflection::Field*> sortedFields
+                { 
+                    object->fields()->begin(),
+                    object->fields()->end(),
+                };
+
+                std::ranges::sort(
+                    sortedFields.begin(),
+                    sortedFields.end(),
+                    [](auto left, auto right)
+                    {
+                        return left->id() < right->id();
+                    });
+
+                for (auto field : sortedFields)
                 {
-                    std::string fieldName = field->name()->str();
-                    std::string fieldOffsetExpression = std::format("{0}[{1}]", vtableExpression, field->id() + 2);
-                    std::string fieldPresentExpression = std::format(
-                        "({0} &gt; {1} &amp;&amp; {2} != 0)",
-                        vtableLengthExpression,
-                        field->id(),
-                        fieldOffsetExpression);
+                    FieldExpressions fieldExpressions(schema, field);
 
-                    // Write out an Item that displays if the field is not present.
-                    result << R"(            <!-- If )" << field->name()->str() << R"( is not present -->
-)";
-                    result << R"(            <Item Optional="true" Name=")" << field->name()->str() << R"(" Condition=")";
-                    result << "!" << fieldPresentExpression;
-                    result << R"(">0</Item>
-)";
-
-                    // Write out an Item that displays if the field is present.
-                    result << R"(            <!-- If )" << field->name()->str() << R"( is present -->
-)";
-                    result << R"(            <Item Optional="true" Name=")" << field->name()->str() << R"(" Condition=")";
-                    result << fieldPresentExpression;
-                    result << R"(">)";
-
-                    // Now read the value correctly.
-                    std::string fieldType = GetFieldType(field->type()->base_type());
-                    std::string fieldValueExpression = std::format(
-                        "*reinterpret_cast&lt;{0}*&gt;(data_ + {1})",
-                        fieldType,
-                        fieldOffsetExpression
-                    );
-
-                    if (field->type()->base_type() == reflection::BaseType::UType)
+                    if (field->type()->base_type() != reflection::BaseType::Union)
                     {
-                        auto unionEnumerationType = GetIndirectFieldType(
-                            schema,
-                            field);
-
-                        fieldValueExpression = std::format(
-                            "static_cast&lt;{0}&gt;({1})",
-                            unionEnumerationType,
-                            fieldValueExpression);
+                        auto nonUnionItem = std::format(
+                            R"(            <!-- If {0} is not present -->
+            <Item Optional="true" Name="{0}" Condition="!{1}">"Not Present"</Item>
+            <!-- If {0} present -->
+            <Item Optional="true" Name="{0}" Condition="{1}">{2}</Item>
+)",
+                            field->name()->str(),
+                            fieldExpressions.fieldPresentExpression,
+                            fieldExpressions.fieldValueExpression);
+                        result << nonUnionItem;
                     }
-
-                    if (IsIndirect(field))
+                    else
                     {
-                        auto indirectFieldType = GetIndirectFieldType(schema, field);
+                        auto typeField = *std::ranges::find_if(
+                            *object->fields(),
+                            [&](const reflection::Field* typeField)
+                        {
+                            return typeField->id() == field->id() - 1;
+                        });
 
-                        fieldValueExpression = std::format(
-                            "reinterpret_cast&lt;{0}*&gt;(data_ + {1} + {2})",
-                            indirectFieldType,
-                            fieldOffsetExpression,
-                            fieldValueExpression);
+                        auto typeFieldName = typeField->name()->str();
+
+                        FieldExpressions typeFieldExpressions(schema, typeField);
+
+                        auto unionEnum = schema->enums()->Get(typeField->type()->index());
+
+                        // Write one item for each enumeration value.
+                        for (auto enumValue : *unionEnum->values())
+                        {
+                            auto enumValueCheckExpression = std::format(
+                                "({0} &amp;&amp; ({1} == {2}::{3}))",
+                                typeFieldExpressions.fieldPresentExpression,
+                                typeFieldExpressions.fieldValueExpression,
+                                GetCppTypeName(unionEnum->name()->str()),
+                                enumValue->name()->str()
+                            );
+
+                            auto conditionExpression = std::format(
+                                "{0} &amp;&amp; {1}",
+                                fieldExpressions.fieldPresentExpression,
+                                enumValueCheckExpression
+                            );
+
+                            auto unionType = enumValue->union_type();
+                            auto fieldType = GetFieldType(unionType->base_type());
+                            auto fieldValueExpression = std::format(
+                                "reinterpret_cast&lt;{0}*&gt;({1})",
+                                fieldType,
+                                fieldExpressions.fieldValueExpression
+                            );
+                            
+                            if (IsIndirect(unionType->base_type()))
+                            {
+                                fieldValueExpression = std::format(
+                                    "reinterpret_cast&lt;{0}*&gt;({1})",
+                                    GetIndirectFieldType(schema, unionType),
+                                    fieldValueExpression);
+                            }
+
+                            if (enumValue->name()->str() == "NONE")
+                            {
+                                fieldValueExpression = R"("Not Present")";
+                                conditionExpression = std::format(
+                                    "!{0} || {1}",
+                                    typeFieldExpressions.fieldPresentExpression,
+                                    conditionExpression
+                                );
+                            }
+
+                            auto item = std::format(
+                                R"(            <Item Optional="true" Name="{0}" Condition="{1}">{2}</Item>
+)",
+                                field->name()->str(),
+                                conditionExpression,
+                                fieldValueExpression);
+
+                            result << item;
+                        }
                     }
-
-                    result << fieldValueExpression;
-
-                    result << R"(</Item>
-)";
                 }
             }
 

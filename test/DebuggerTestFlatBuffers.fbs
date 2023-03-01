@@ -26,6 +26,7 @@ table TestTable {
     double_vector : [double];
 
     union_value : TestUnion;
+    union_value_2 : TestUnion;
 
     bool_value : bool;
     byte_value : byte;
