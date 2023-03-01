@@ -156,6 +156,7 @@ struct FieldExpressions
     std::string fieldPresentExpression;
     std::string fieldValueExpression;
     std::string fieldType;
+    bool isStruct = false;
 
     FieldExpressions(
         const reflection::Schema* schema,
@@ -170,7 +171,14 @@ struct FieldExpressions
             field->id(),
             fieldOffsetExpression);
 
+        isStruct = field->type()->base_type() == reflection::BaseType::Obj
+            && schema->objects()->Get(field->type()->index())->is_struct();
+
         std::string fieldType = GetFieldType(field->type()->base_type());
+        if (isStruct)
+        {
+            fieldType = GetCppTypeName(schema->objects()->Get(field->type()->index())->name()->str());
+        }
         fieldValueExpression = std::format(
             "*reinterpret_cast&lt;{0}*&gt;(data_ + {1})",
             fieldType,
@@ -188,8 +196,7 @@ struct FieldExpressions
                 unionEnumerationType,
                 fieldValueExpression);
         }
-
-        if (IsIndirect(field->type()->base_type()))
+        else if (IsIndirect(field->type()->base_type()) && !isStruct)
         {
             auto indirectFieldType = GetIndirectFieldType(schema, field->type());
 
@@ -199,6 +206,7 @@ struct FieldExpressions
                 fieldOffsetExpression,
                 fieldValueExpression);
         }
+
     }
 };
 

@@ -47,6 +47,8 @@ TEST(DebuggerTests, Step_into_this_and_look_at_visualization_in_VisualStudio)
         topLevel.uint_value = 0xf6543210;
         topLevel.ulong_value = (0xedcba09876543210ULL | (0xfULL << 60));
         topLevel.ushort_value = 0xf210;
+        
+        topLevel.struct_value = std::make_unique<TestStruct>(17);
 
         auto rootOffset = TestTable::Pack(builder, &topLevel);
         builder.Finish(rootOffset);

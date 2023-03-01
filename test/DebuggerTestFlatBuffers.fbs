@@ -28,6 +28,7 @@ table TestTable {
     union_value : TestUnion;
     union_value_2 : TestUnion;
 
+    struct_value : TestStruct;
     bool_value : bool;
     byte_value : byte;
     double_value : double;
