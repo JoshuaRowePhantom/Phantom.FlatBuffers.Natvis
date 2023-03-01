@@ -3,6 +3,7 @@
   "name": "phantom-flatbuffers",
   "version": "0.0.0",
   "dependencies": [
+    "boost-algorithm",
     "boost-optional",
     "boost-program-options",
     "flatbuffers",

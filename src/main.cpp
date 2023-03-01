@@ -6,12 +6,47 @@
 #include <iostream>
 #include <iterator>
 #include <sstream>
+#include <boost/algorithm/string.hpp>
 
 std::string GetNatvis(
-    std::span<const uint8_t> schema
+    const reflection::Schema* schema
 )
 {
-    return "";
+    std::ostringstream result;
+
+    result << R"(<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+)";
+
+    if (schema->objects())
+    {
+        for (auto object : *schema->objects())
+        {
+            if (object->is_struct())
+            {
+                continue;
+            }
+
+            auto name = object->name()->str();
+            boost::replace_all(
+                name,
+                ".",
+                "::"
+            );
+            
+            result << R"(    <Type Name=")" << name << R"(">
+)";
+
+            result << R"(    </Type>
+)";
+
+        }
+    }
+
+    result << R"(</AutoVisualizer>
+)";
+
+
+    return result.str();
 }
 
 void WriteNatvis(
@@ -24,12 +59,19 @@ void WriteNatvis(
         std::istreambuf_iterator<char>(sourceBinarySchemaFile),
         {});
 
+    flatbuffers::Verifier verifier(
+        reinterpret_cast<const uint8_t*>(sourceBinarySchema.data()),
+        sourceBinarySchema.size());
+    if (!verifier.VerifyBuffer<reflection::Schema>())
+    {
+        throw std::exception("Invalid schema");
+    }
+
+    const reflection::Schema* schema = flatbuffers::GetRoot<reflection::Schema>(
+        sourceBinarySchema.data());
+
     std::string natvis = GetNatvis(
-        std::span<const uint8_t>
-        {
-            reinterpret_cast<const uint8_t*>(sourceBinarySchema.data()),
-            sourceBinarySchema.size()
-        });
+        schema);
 
     std::ofstream outputFile(outputPath);
     outputFile << natvis;
@@ -66,7 +108,10 @@ int main(
         .add(helpOptions)
         .add(processingOptions);
 
-    po::parse_command_line(argc, argv, allOptions);
+    auto parsedOptions = po::parse_command_line(argc, argv, allOptions);
+    po::variables_map optionsMap;
+    store(parsedOptions, optionsMap);
+    notify(optionsMap);
 
     if (help)
     {
