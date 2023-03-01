@@ -10,6 +10,11 @@
         </Expand>
     </Type>
 
+    <Type Name="flatbuffers::String">
+        <DisplayString>{reinterpret_cast&lt;char*&gt;(&amp;length_ + 1)}</DisplayString>
+        <StringView>reinterpret_cast&lt;char*&gt;(&amp;length_ + 1)</StringView>
+    </Type>
+
     <Type Name="flatbuffers::Offset&lt;*&gt;">
         <SmartPointer Usage="Minimal">reinterpret_cast&lt;$T1*&gt;(reinterpret_cast&lt;char*&gt;(this) + o)</SmartPointer>
     </Type>

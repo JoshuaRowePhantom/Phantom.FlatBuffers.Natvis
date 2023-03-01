@@ -54,7 +54,7 @@ std::string GetIndirectFieldType(
             schema->objects()->Get(type->index()));
 
     case reflection::BaseType::String:
-        return "flatbuffers::Vector&lt;char&gt;";
+        return "flatbuffers::String";
 
     case reflection::BaseType::Vector:
         if (type->element() == reflection::BaseType::Obj)
@@ -117,7 +117,7 @@ std::string GetFieldType(
         return "signed short";
         break;
     case reflection::BaseType::String:
-        return "signed long long";
+        return "signed int";
         break;
     case reflection::BaseType::UByte:
         return "unsigned char";
