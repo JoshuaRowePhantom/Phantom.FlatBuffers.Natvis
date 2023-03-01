@@ -18,6 +18,9 @@ TEST(DebuggerTests, Step_into_this_and_look_at_visualization_in_VisualStudio)
     auto& subTable3 = topLevel.vector_table.emplace_back(std::make_unique<SubTableT>());
     subTable3->value = 3;
 
+    auto& subTable2_1 = topLevel.sub_table_2 = std::make_unique<SubTable2T>();
+    subTable2_1->value_2 = 99;
+
     topLevel.string_value = "hello world";
     topLevel.byte_vector.push_back(1);
     topLevel.byte_vector.push_back(2);
@@ -26,6 +29,18 @@ TEST(DebuggerTests, Step_into_this_and_look_at_visualization_in_VisualStudio)
     topLevel.double_vector.push_back(0.75);
     topLevel.double_vector.push_back(0.885);
     
+    topLevel.bool_value = true;
+    topLevel.byte_value = 0xf0;
+    topLevel.double_value = .75;
+    topLevel.float_value = 1.25;
+    topLevel.int_value = 0xf6543210;
+    topLevel.long_value = (0xedcba09876543210LL | (0xfLL << 60));
+    topLevel.short_value = 0xf210;
+    topLevel.ubyte_value = 0xf0;
+    topLevel.uint_value = 0xf6543210;
+    topLevel.ulong_value = (0xedcba09876543210ULL | (0xfULL << 60));
+    topLevel.ushort_value = 0xf210;
+
     flatbuffers::FlatBufferBuilder builder;
     auto rootOffset = TestTable::Pack(builder, &topLevel);
     builder.Finish(rootOffset);

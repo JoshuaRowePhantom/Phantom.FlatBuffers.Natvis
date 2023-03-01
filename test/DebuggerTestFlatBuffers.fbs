@@ -1,5 +1,9 @@
 namespace Phantom.FlatBuffers.Natvis.Test.FlatBuffers;
 
+table SubTable2 {
+    value_2 : uint8;
+}
+
 table SubTable {
     value : uint8;
 }
@@ -7,7 +11,20 @@ table SubTable {
 table TestTable {
     vector_table : [SubTable];
     sub_table : SubTable;
+    sub_table_2 : SubTable2;
     string_value : string;
     byte_vector : [byte];
     double_vector : [double];
+
+    bool_value : bool;
+    byte_value : byte;
+    double_value : double;
+    float_value : float;
+    int_value : int;
+    long_value : long;
+    short_value : short;
+    ubyte_value : ubyte;
+    uint_value : uint;
+    ulong_value : ulong;
+    ushort_value : ushort;
 }

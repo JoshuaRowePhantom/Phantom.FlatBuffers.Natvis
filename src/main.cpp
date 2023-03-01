@@ -2,11 +2,118 @@
 #include <boost/optional.hpp>
 #include <boost/program_options.hpp>
 #include <flatbuffers/reflection.h>
+#include <format>
 #include <fstream>
 #include <iostream>
 #include <iterator>
 #include <sstream>
 #include <boost/algorithm/string.hpp>
+
+std::string GetCppTypeName(
+    const reflection::Object* object
+)
+{
+    auto name = object->name()->str();
+    boost::replace_all(
+        name,
+        ".",
+        "::"
+    );
+    return name;
+}
+std::string GetFieldType(
+    reflection::BaseType type);
+
+std::string GetIndirectFieldType(
+    const reflection::Schema* schema,
+    const reflection::Field* field)
+{
+    switch (field->type()->base_type())
+    {
+    case reflection::BaseType::Obj:
+        return GetCppTypeName(
+            schema->objects()->Get(field->type()->index()));
+
+    case reflection::BaseType::Vector:
+        if (field->type()->element() == reflection::BaseType::Obj)
+        {
+            return std::format(
+                "flatbuffers::Vector&lt;flatbuffers::Offset&lt;{0}&gt; &gt;",
+                GetCppTypeName(
+                    schema->objects()->Get(field->type()->index()))
+            );
+        }
+
+        return std::format(
+            "flatbuffers::Vector&lt;{0}&gt;",
+            GetFieldType(field->type()->element())
+        );
+    }
+    return "UnknownType";
+}
+
+bool IsIndirect(
+    const reflection::Field* field)
+{
+    switch (field->type()->base_type())
+    {
+    case reflection::BaseType::Obj:
+    case reflection::BaseType::String:
+    case reflection::BaseType::Vector:
+        return true;
+    default:
+        return false;
+    }
+}
+
+std::string GetFieldType(
+    reflection::BaseType type)
+{
+    switch (type)
+    {
+    case reflection::BaseType::Bool:
+    case reflection::BaseType::Byte:
+        return "signed char";
+        break;
+    case reflection::BaseType::Double:
+        return "double";
+        break;
+    case reflection::BaseType::Float:
+        return "float";
+        break;
+    case reflection::BaseType::Int:
+        return "signed int";
+        break;
+    case reflection::BaseType::Long:
+        return "signed long long";
+        break;
+    case reflection::BaseType::Obj:
+        return "signed long";
+        break;
+    case reflection::BaseType::Short:
+        return "signed short";
+        break;
+    case reflection::BaseType::String:
+        return "signed long long";
+    case reflection::BaseType::UByte:
+        return "unsigned char";
+        break;
+    case reflection::BaseType::UInt:
+        return "unsigned int";
+        break;
+    case reflection::BaseType::ULong:
+        return "unsigned long long";
+        break;
+    case reflection::BaseType::UShort:
+        return "unsigned short";
+        break;
+    case reflection::BaseType::Vector:
+        return "signed long";
+        break;
+    }
+
+    return "UnknownType";
+}
 
 std::string GetNatvis(
     const reflection::Schema* schema
@@ -26,19 +133,71 @@ std::string GetNatvis(
                 continue;
             }
 
-            auto name = object->name()->str();
-            boost::replace_all(
-                name,
-                ".",
-                "::"
-            );
+            auto name = GetCppTypeName(
+                object);
             
             result << R"(    <Type Name=")" << name << R"(">
+        <Expand>
 )";
 
-            result << R"(    </Type>
+            std::string vtableExpression = "reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))";
+            std::string vtableLengthExpression = vtableExpression + "[0]";
+            
+            if (object->fields())
+            {
+                for (auto field : *object->fields())
+                {
+                    std::string fieldOffsetExpression = std::format("{0}[{1}]", vtableExpression, field->id() + 2);
+                    std::string fieldPresentExpression = std::format(
+                        "({0} &gt; {1} &amp;&amp; {2} != 0)",
+                        vtableLengthExpression,
+                        field->id(),
+                        fieldOffsetExpression);
+
+                    // Write out an Item that displays if the field is not present.
+                    result << R"(            <!-- If )" << field->name()->str() << R"( is not present -->
+)";
+                    result << R"(            <Item Optional="true" Name=")" << field->name()->str() << R"(" Condition=")";
+                    result << "!" << fieldPresentExpression;
+                    result << R"(">0</Item>
 )";
 
+                    // Write out an Item that displays if the field is present.
+                    result << R"(            <!-- If )" << field->name()->str() << R"( is present -->
+)";
+                    result << R"(            <Item Optional="true" Name=")" << field->name()->str() << R"(" Condition=")";
+                    result << fieldPresentExpression;
+                    result << R"(">)";
+
+                    // Now read the value correctly.
+                    std::string fieldType = GetFieldType(field->type()->base_type());
+                    std::string fieldValueExpression = std::format(
+                        "*reinterpret_cast&lt;{0}*&gt;(data_ + {1})",
+                        fieldType,
+                        fieldOffsetExpression
+                    );
+
+                    if (IsIndirect(field))
+                    {
+                        auto indirectFieldType = GetIndirectFieldType(schema, field);
+
+                        fieldValueExpression = std::format(
+                            "reinterpret_cast&lt;{0}*&gt;(data_ + {1} + {2})",
+                            indirectFieldType,
+                            fieldOffsetExpression,
+                            fieldValueExpression);
+                    }
+
+                    result << fieldValueExpression;
+
+                    result << R"(</Item>
+)";
+                }
+            }
+
+            result << R"(        </Expand>
+    </Type>
+)";
         }
     }
 

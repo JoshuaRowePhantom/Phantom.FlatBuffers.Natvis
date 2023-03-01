@@ -1,0 +1,16 @@
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+    
+    <Type Name="flatbuffers::Vector&lt;*&gt;">
+        <DisplayString>{length_} items</DisplayString>
+        <Expand>
+            <ArrayItems>
+                <Size>length_</Size>
+                <ValuePointer>reinterpret_cast&lt;$T1*&gt;(&amp;length_ + 1)</ValuePointer>
+            </ArrayItems>
+        </Expand>
+    </Type>
+
+    <Type Name="flatbuffers::Offset&lt;*&gt;">
+        <SmartPointer Usage="Minimal">reinterpret_cast&lt;$T1*&gt;(reinterpret_cast&lt;char*&gt;(this) + o)</SmartPointer>
+    </Type>
+</AutoVisualizer>

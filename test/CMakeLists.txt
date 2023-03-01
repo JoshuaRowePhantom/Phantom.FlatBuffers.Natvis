@@ -29,10 +29,13 @@ target_link_libraries(
 
 phantom_flatbuffers_generate_natvis(
     TARGET Phantom.FlatBuffers.Natvis.Test.FlatBuffers
-    NATVIS_DIR "${CMAKE_CURRENT_BINARY_DIR}"
+    NATVIS_DIR "${CMAKE_CURRENT_SOURCE_DIR}"
 )
 set_target_properties(
     Phantom.FlatBuffers.Natvis.Test
     PROPERTIES
     CXX_STANDARD 20
 )
+
+gtest_discover_tests(
+    Phantom.FlatBuffers.Natvis.Test)

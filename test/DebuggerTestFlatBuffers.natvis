@@ -1,0 +1,90 @@
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+    <Type Name="Phantom::FlatBuffers::Natvis::Test::FlatBuffers::SubTable">
+        <Expand>
+            <!-- If value is not present -->
+            <Item Optional="true" Name="value" Condition="!(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 0 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[2] != 0)">0</Item>
+            <!-- If value is present -->
+            <Item Optional="true" Name="value" Condition="(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 0 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[2] != 0)">*reinterpret_cast&lt;unsigned char*&gt;(data_ + reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[2])</Item>
+        </Expand>
+    </Type>
+    <Type Name="Phantom::FlatBuffers::Natvis::Test::FlatBuffers::SubTable2">
+        <Expand>
+            <!-- If value_2 is not present -->
+            <Item Optional="true" Name="value_2" Condition="!(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 0 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[2] != 0)">0</Item>
+            <!-- If value_2 is present -->
+            <Item Optional="true" Name="value_2" Condition="(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 0 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[2] != 0)">*reinterpret_cast&lt;unsigned char*&gt;(data_ + reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[2])</Item>
+        </Expand>
+    </Type>
+    <Type Name="Phantom::FlatBuffers::Natvis::Test::FlatBuffers::TestTable">
+        <Expand>
+            <!-- If bool_value is not present -->
+            <Item Optional="true" Name="bool_value" Condition="!(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 6 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[8] != 0)">0</Item>
+            <!-- If bool_value is present -->
+            <Item Optional="true" Name="bool_value" Condition="(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 6 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[8] != 0)">*reinterpret_cast&lt;signed char*&gt;(data_ + reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[8])</Item>
+            <!-- If byte_value is not present -->
+            <Item Optional="true" Name="byte_value" Condition="!(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 7 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[9] != 0)">0</Item>
+            <!-- If byte_value is present -->
+            <Item Optional="true" Name="byte_value" Condition="(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 7 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[9] != 0)">*reinterpret_cast&lt;signed char*&gt;(data_ + reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[9])</Item>
+            <!-- If byte_vector is not present -->
+            <Item Optional="true" Name="byte_vector" Condition="!(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 4 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[6] != 0)">0</Item>
+            <!-- If byte_vector is present -->
+            <Item Optional="true" Name="byte_vector" Condition="(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 4 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[6] != 0)">reinterpret_cast&lt;flatbuffers::Vector&lt;signed char&gt;*&gt;(data_ + reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[6] + *reinterpret_cast&lt;signed long*&gt;(data_ + reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[6]))</Item>
+            <!-- If double_value is not present -->
+            <Item Optional="true" Name="double_value" Condition="!(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 8 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[10] != 0)">0</Item>
+            <!-- If double_value is present -->
+            <Item Optional="true" Name="double_value" Condition="(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 8 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[10] != 0)">*reinterpret_cast&lt;double*&gt;(data_ + reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[10])</Item>
+            <!-- If double_vector is not present -->
+            <Item Optional="true" Name="double_vector" Condition="!(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 5 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[7] != 0)">0</Item>
+            <!-- If double_vector is present -->
+            <Item Optional="true" Name="double_vector" Condition="(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 5 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[7] != 0)">reinterpret_cast&lt;flatbuffers::Vector&lt;double&gt;*&gt;(data_ + reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[7] + *reinterpret_cast&lt;signed long*&gt;(data_ + reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[7]))</Item>
+            <!-- If float_value is not present -->
+            <Item Optional="true" Name="float_value" Condition="!(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 9 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[11] != 0)">0</Item>
+            <!-- If float_value is present -->
+            <Item Optional="true" Name="float_value" Condition="(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 9 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[11] != 0)">*reinterpret_cast&lt;float*&gt;(data_ + reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[11])</Item>
+            <!-- If int_value is not present -->
+            <Item Optional="true" Name="int_value" Condition="!(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 10 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[12] != 0)">0</Item>
+            <!-- If int_value is present -->
+            <Item Optional="true" Name="int_value" Condition="(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 10 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[12] != 0)">*reinterpret_cast&lt;signed int*&gt;(data_ + reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[12])</Item>
+            <!-- If long_value is not present -->
+            <Item Optional="true" Name="long_value" Condition="!(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 11 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[13] != 0)">0</Item>
+            <!-- If long_value is present -->
+            <Item Optional="true" Name="long_value" Condition="(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 11 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[13] != 0)">*reinterpret_cast&lt;signed long long*&gt;(data_ + reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[13])</Item>
+            <!-- If short_value is not present -->
+            <Item Optional="true" Name="short_value" Condition="!(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 12 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[14] != 0)">0</Item>
+            <!-- If short_value is present -->
+            <Item Optional="true" Name="short_value" Condition="(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 12 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[14] != 0)">*reinterpret_cast&lt;signed short*&gt;(data_ + reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[14])</Item>
+            <!-- If string_value is not present -->
+            <Item Optional="true" Name="string_value" Condition="!(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 3 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[5] != 0)">0</Item>
+            <!-- If string_value is present -->
+            <Item Optional="true" Name="string_value" Condition="(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 3 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[5] != 0)">reinterpret_cast&lt;UnknownType*&gt;(data_ + reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[5] + *reinterpret_cast&lt;signed long long*&gt;(data_ + reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[5]))</Item>
+            <!-- If sub_table is not present -->
+            <Item Optional="true" Name="sub_table" Condition="!(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 1 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[3] != 0)">0</Item>
+            <!-- If sub_table is present -->
+            <Item Optional="true" Name="sub_table" Condition="(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 1 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[3] != 0)">reinterpret_cast&lt;Phantom::FlatBuffers::Natvis::Test::FlatBuffers::SubTable*&gt;(data_ + reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[3] + *reinterpret_cast&lt;signed long*&gt;(data_ + reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[3]))</Item>
+            <!-- If sub_table_2 is not present -->
+            <Item Optional="true" Name="sub_table_2" Condition="!(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 2 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[4] != 0)">0</Item>
+            <!-- If sub_table_2 is present -->
+            <Item Optional="true" Name="sub_table_2" Condition="(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 2 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[4] != 0)">reinterpret_cast&lt;Phantom::FlatBuffers::Natvis::Test::FlatBuffers::SubTable2*&gt;(data_ + reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[4] + *reinterpret_cast&lt;signed long*&gt;(data_ + reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[4]))</Item>
+            <!-- If ubyte_value is not present -->
+            <Item Optional="true" Name="ubyte_value" Condition="!(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 13 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[15] != 0)">0</Item>
+            <!-- If ubyte_value is present -->
+            <Item Optional="true" Name="ubyte_value" Condition="(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 13 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[15] != 0)">*reinterpret_cast&lt;unsigned char*&gt;(data_ + reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[15])</Item>
+            <!-- If uint_value is not present -->
+            <Item Optional="true" Name="uint_value" Condition="!(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 14 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[16] != 0)">0</Item>
+            <!-- If uint_value is present -->
+            <Item Optional="true" Name="uint_value" Condition="(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 14 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[16] != 0)">*reinterpret_cast&lt;unsigned int*&gt;(data_ + reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[16])</Item>
+            <!-- If ulong_value is not present -->
+            <Item Optional="true" Name="ulong_value" Condition="!(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 15 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[17] != 0)">0</Item>
+            <!-- If ulong_value is present -->
+            <Item Optional="true" Name="ulong_value" Condition="(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 15 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[17] != 0)">*reinterpret_cast&lt;unsigned long long*&gt;(data_ + reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[17])</Item>
+            <!-- If ushort_value is not present -->
+            <Item Optional="true" Name="ushort_value" Condition="!(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 16 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[18] != 0)">0</Item>
+            <!-- If ushort_value is present -->
+            <Item Optional="true" Name="ushort_value" Condition="(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 16 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[18] != 0)">*reinterpret_cast&lt;unsigned short*&gt;(data_ + reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[18])</Item>
+            <!-- If vector_table is not present -->
+            <Item Optional="true" Name="vector_table" Condition="!(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 0 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[2] != 0)">0</Item>
+            <!-- If vector_table is present -->
+            <Item Optional="true" Name="vector_table" Condition="(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; 0 &amp;&amp; reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[2] != 0)">reinterpret_cast&lt;flatbuffers::Vector&lt;flatbuffers::Offset&lt;Phantom::FlatBuffers::Natvis::Test::FlatBuffers::SubTable&gt; &gt;*&gt;(data_ + reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[2] + *reinterpret_cast&lt;signed long*&gt;(data_ + reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[2]))</Item>
+        </Expand>
+    </Type>
+</AutoVisualizer>
