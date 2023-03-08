@@ -1,9 +1,5 @@
 cmake_minimum_required (VERSION 3.24)
 
-find_package(flatbuffers CONFIG REQUIRED )
-include("${flatbuffers_DIR}/FlatcTargets.cmake")
-find_program(FLATBUFFERS_FLATC_EXECUTABLE flatc)
-include("${flatbuffers_DIR}/BuildFlatBuffers.cmake")
 find_package(gtest REQUIRED)
 
 add_executable(
@@ -31,6 +27,7 @@ phantom_flatbuffers_generate_natvis(
     TARGET Phantom.FlatBuffers.Natvis.Test.FlatBuffers
     NATVIS_DIR "${CMAKE_CURRENT_SOURCE_DIR}"
 )
+
 set_target_properties(
     Phantom.FlatBuffers.Natvis.Test
     PROPERTIES
