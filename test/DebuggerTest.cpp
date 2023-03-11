@@ -6,7 +6,7 @@ namespace Phantom::FlatBuffers::Natvis::Test
 {
 using namespace FlatBuffers;
 
-TEST(DebuggerTests, Step_into_this_and_look_at_visualization_in_VisualStudio)
+TEST(NatvisDebuggerTests, Step_into_this_and_look_at_visualization_in_VisualStudio)
 {
     const TestTable* table;
     const TestTable* table2;
@@ -50,6 +50,9 @@ TEST(DebuggerTests, Step_into_this_and_look_at_visualization_in_VisualStudio)
         topLevel.ushort_value = 0xf210;
         
         topLevel.struct_value = std::make_unique<TestStruct>(17);
+
+        topLevel.string_vector.push_back("hello");
+        topLevel.string_vector.push_back("world");
 
         auto rootOffset = TestTable::Pack(builder, &topLevel);
         builder.Finish(rootOffset);

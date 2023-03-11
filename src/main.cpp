@@ -65,6 +65,10 @@ std::string GetIndirectFieldType(
                     schema->objects()->Get(type->index()))
             );
         }
+        if (type->element() == reflection::BaseType::String)
+        {
+            return "flatbuffers::Vector&lt;flatbuffers::Offset&lt;flatbuffers::String&gt; &gt;";
+        }
 
         return std::format(
             "flatbuffers::Vector&lt;{0}&gt;",

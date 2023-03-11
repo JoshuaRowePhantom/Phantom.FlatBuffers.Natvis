@@ -103,6 +103,10 @@
             <Item Optional="true" Name="ushort_value" Condition="!(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; (21 * 2 + 4) &amp;&amp; (reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[23]) != 0)">"Not Present"</Item>
             <!-- If ushort_value present -->
             <Item Optional="true" Name="ushort_value" Condition="(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; (21 * 2 + 4) &amp;&amp; (reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[23]) != 0)">*reinterpret_cast&lt;unsigned short*&gt;(data_ + (reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[23]))</Item>
+            <!-- If string_vector is not present -->
+            <Item Optional="true" Name="string_vector" Condition="!(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; (22 * 2 + 4) &amp;&amp; (reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[24]) != 0)">"Not Present"</Item>
+            <!-- If string_vector present -->
+            <Item Optional="true" Name="string_vector" Condition="(reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[0] &gt; (22 * 2 + 4) &amp;&amp; (reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[24]) != 0)">reinterpret_cast&lt;flatbuffers::Vector&lt;flatbuffers::Offset&lt;flatbuffers::String&gt; &gt;*&gt;(data_ + (reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[24]) + *reinterpret_cast&lt;signed long*&gt;(data_ + (reinterpret_cast&lt;uint16_t*&gt;(data_ - *reinterpret_cast&lt;int32_t*&gt;(&amp;data_[0]))[24])))</Item>
         </Expand>
     </Type>
 </AutoVisualizer>

@@ -40,4 +40,6 @@ table TestTable {
     uint_value : uint;
     ulong_value : ulong;
     ushort_value : ushort;
+
+    string_vector : [string];
 }
