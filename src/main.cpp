@@ -59,11 +59,22 @@ std::string GetIndirectFieldType(
     case reflection::BaseType::Vector:
         if (type->element() == reflection::BaseType::Obj)
         {
-            return std::format(
-                "flatbuffers::Vector&lt;flatbuffers::Offset&lt;{0}&gt; &gt;",
-                GetCppTypeName(
-                    schema->objects()->Get(type->index()))
-            );
+            if (!schema->objects()->Get(type->index())->is_struct())
+            {
+                return std::format(
+                    "flatbuffers::Vector&lt;flatbuffers::Offset&lt;{0}&gt; &gt;",
+                    GetCppTypeName(
+                        schema->objects()->Get(type->index()))
+                );
+            }
+            else
+            {
+                return std::format(
+                    "flatbuffers::Vector&lt;{0}&gt;",
+                    GetCppTypeName(
+                        schema->objects()->Get(type->index()))
+                );
+            }
         }
         if (type->element() == reflection::BaseType::String)
         {

@@ -54,6 +54,9 @@ TEST(NatvisDebuggerTests, Step_into_this_and_look_at_visualization_in_VisualStud
         topLevel.string_vector.push_back("hello");
         topLevel.string_vector.push_back("world");
 
+        topLevel.struct_vector.push_back(TestStruct(15));
+        topLevel.struct_vector.push_back(TestStruct(16));
+
         auto rootOffset = TestTable::Pack(builder, &topLevel);
         builder.Finish(rootOffset);
 
